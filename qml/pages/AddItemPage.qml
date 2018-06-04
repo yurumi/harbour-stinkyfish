@@ -106,13 +106,13 @@ Dialog {
     
     SilicaFlickable {
 	anchors.fill: parent
-	contentWidth: 300
+    contentWidth: parent.width
 	contentHeight: 300
 
 	Column {
 	    id: addComponentsColumn
 	    width: parent.width
-            spacing: Theme.paddingLarge
+        spacing: Theme.paddingLarge
 
 	    DialogHeader {
 		acceptText: "Save"

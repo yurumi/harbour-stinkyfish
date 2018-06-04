@@ -64,7 +64,8 @@ ApplicationWindow
 	    id: operationOverlay
 	    height: 100
 	    anchors.bottom: parent.bottom
-	    anchors.left: parent.left
+        anchors.left: parent.left
+        anchors.leftMargin: 280
 	    anchors.right: parent.right
 	    color: "blue"
 
