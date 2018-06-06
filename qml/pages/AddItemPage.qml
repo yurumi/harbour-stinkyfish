@@ -17,6 +17,8 @@ Dialog {
     property var dynamicComponent
     property var dynamicObject: null
 
+    canAccept: titleField.text.length > 0
+
     states: [
         State {
             name: "CREATE"
@@ -199,6 +201,9 @@ Dialog {
                 placeholderText: "Node title"
                 label: "Title"
                 focus: addDialog.state === "CREATE"
+                EnterKey.enabled: text.length > 0
+                EnterKey.iconSource: "image://theme/icon-m-enter-next"
+                EnterKey.onClicked: descriptionField.focus = true
             }
             TextField {
                 id: descriptionField
