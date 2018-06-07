@@ -225,7 +225,7 @@ Page {
                 id: delegateColumn
                 anchors.left: parent.left
                 anchors.right: parent.right
-                spacing: Theme.paddingSmall
+                spacing: Theme.paddingMedium
             }
 
         }
@@ -314,29 +314,29 @@ Page {
                 text: "Share"
                 onClicked: Database.printTables()
             }
-            Button {
-                text: "Edit"
+            /* Button { */
+            /*     text: "Edit" */
 
-                property var nodeIdToEdit: -1
+            /*     property var nodeIdToEdit: -1 */
 
-                Component.onCompleted: {
-                    movementPanel.onVisibleChanged.connect(openEditPage)
-                }
+            /*     Component.onCompleted: { */
+            /*         movementPanel.onVisibleChanged.connect(openEditPage) */
+            /*     } */
 
-                onClicked: {
-                    var selectedIds = getSelection()
-                    nodeIdToEdit = Database.getMetaNode(selectedIds[0]).id
-                    appWindow.state = "VIEW"
-                }
+            /*     onClicked: { */
+            /*         var selectedIds = getSelection() */
+            /*         nodeIdToEdit = Database.getMetaNode(selectedIds[0]).id */
+            /*         appWindow.state = "VIEW" */
+            /*     } */
 
-                function openEditPage() {
-                    if(nodeIdToEdit > 0 && !movementPanel.visible){
-                        pageStack.push(Qt.resolvedUrl("AddItemPage.qml"),
-                                       { "nodeId": nodeIdToEdit })
-                        nodeIdToEdit = -1
-                    }
-                }
-            }
+            /*     function openEditPage() { */
+            /*         if(nodeIdToEdit > 0 && !movementPanel.visible){ */
+            /*             pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), */
+            /*                            { "nodeId": nodeIdToEdit }) */
+            /*             nodeIdToEdit = -1 */
+            /*         } */
+            /*     } */
+            /* } */
         }
 
         onOpenChanged: {

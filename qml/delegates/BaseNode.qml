@@ -54,21 +54,21 @@ Item {
         state = "UNSELECTED"
     }
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            if(appWindow.state === "SELECT"){
-                toggleSelection()
-            }
-            else{
-                enterNode(baseNode.id)
-            }
-        }
-        onPressAndHold: {
-            appWindow.state = "SELECT"
-            toggleSelection()
-        }
-    }
+    /* MouseArea { */
+        /* anchors.fill: parent */
+        /* onClicked: { */
+        /*     if(appWindow.state === "SELECT"){ */
+        /*         toggleSelection() */
+        /*     } */
+        /*     else{ */
+        /*         enterNode(baseNode.id) */
+        /*     } */
+        /* } */
+        /* onPressAndHold: { */
+        /*     appWindow.state = "SELECT" */
+        /*     toggleSelection() */
+        /* } */
+    /* } */
 
     Column {
         anchors.fill: parent
