@@ -12,19 +12,22 @@ Page {
 
     onAppStateChanged: {
         if(appState === 'SELECT'){
+            bottomPanel.opacity = 1.0
             bottomPanel.show()
             movementPanel.show()
             pastePanel.hide()
         }
         else if(appState === 'VIEW'){
+            bottomPanel.opacity = 0.0
             bottomPanel.hide()
             movementPanel.hide()
             pastePanel.hide()
         }
         else if(appState === 'PASTE'){
-            bottomPanel.hide()
-            movementPanel.hide()
+            bottomPanel.opacity = 0.0
+            /* bottomPanel.hide() */
             pastePanel.show()
+            movementPanel.hide()
         }
     }
 
@@ -235,6 +238,7 @@ Page {
         height: bottomPanel.height
         dock: Dock.Bottom
         open: false
+        z: 10
 
         MouseArea {
             anchors.fill: parent
@@ -277,6 +281,8 @@ Page {
         dock: Dock.Bottom
         open: false
 
+        Behavior on opacity { NumberAnimation { duration: 300 } }
+
         MouseArea {
             anchors.fill: parent
         }
@@ -310,18 +316,27 @@ Page {
             }
             Button {
                 text: "Edit"
+
+                property var nodeIdToEdit: -1
+
+                Component.onCompleted: {
+                    movementPanel.onVisibleChanged.connect(openEditPage)
+                }
+
                 onClicked: {
                     var selectedIds = getSelection()
-                    var node = Database.getMetaNode(selectedIds[0])
+                    nodeIdToEdit = Database.getMetaNode(selectedIds[0]).id
                     appWindow.state = "VIEW"
-                    pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), { "nodeId": node.id })
+                }
+
+                function openEditPage() {
+                    if(nodeIdToEdit > 0 && !movementPanel.visible){
+                        pageStack.push(Qt.resolvedUrl("AddItemPage.qml"),
+                                       { "nodeId": nodeIdToEdit })
+                        nodeIdToEdit = -1
+                    }
                 }
             }
-
-            /* IconButton { icon.source: "image://theme/icon-m-clipboard" } */
-            /* IconButton { icon.source: "image://theme/icon-m-delete" } */
-            /* IconButton { icon.source: "image://theme/icon-m-about"} */
-            /* IconButton { icon.source: "image://theme/icon-m-edit"} */
         }
 
         onOpenChanged: {
