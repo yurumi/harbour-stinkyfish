@@ -5,9 +5,11 @@ import "../js/Database.js" as Database
 import "../delegates"
 
 Page {
-    id: itemView
+    id: nodePage
 
-    property int parentId: -1
+    backNavigation: appWindow.state !== 'SELECT'
+
+    property int parentNodeId: -1
     property var appState: appWindow.state
 
     onAppStateChanged: {
@@ -45,13 +47,34 @@ Page {
 
     }
 
+    function deleteStagedNodes()
+    {
+        var stagedNodeIds = getStagedDeletion()
+        for(var i=0; i<stagedNodeIds.length; ++i){
+            Database.deleteNode(stagedNodeIds[i])
+        }
+        /* appWindow.state = "VIEW" */
+        refreshView(true)
+    }
+
     function getSelection()
     {
         var ret = new Array()
         for(var i=0; i<delegateColumn.children.length; ++i){
             if(delegateColumn.children[i].state == "SELECTED"){
                 /* console.log("selected id:", delegateColumn.children[i].id, delegateColumn.children[i].title) */
-                ret.push(delegateColumn.children[i].id)
+                ret.push(delegateColumn.children[i].nodeId)
+            }
+        }
+        return ret
+    }
+
+    function getStagedDeletion()
+    {
+        var ret = new Array()
+        for(var i=0; i<delegateColumn.children.length; ++i){
+            if(delegateColumn.children[i].state == "STAGED_DELETION"){
+                ret.push(delegateColumn.children[i].nodeId)
             }
         }
         return ret
@@ -59,15 +82,15 @@ Page {
 
     function refreshView(clearSelection)
     {
-        var selectedIds = getSelection()
+        var selectedNodeIds = getSelection()
         for(var i=0; i<delegateColumn.children.length; ++i){
             delegateColumn.children[i].destroy()
         }
         createView()
         if(!clearSelection){
-            for(var i=0; i<selectedIds.length; ++i){
+            for(var i=0; i<selectedNodeIds.length; ++i){
                 for(var k=0; k<delegateColumn.children.length; ++k){
-                    if(delegateColumn.children[k].id == selectedIds[i]){
+                    if(delegateColumn.children[k].nodeId == selectedNodeIds[i]){
                         delegateColumn.children[k].select()
                     }
                 }
@@ -77,7 +100,7 @@ Page {
 
     function createView()
     {
-        var childNodes = Database.getChildNodes(parentId)
+        var childNodes = Database.getChildNodes(parentNodeId)
 
         for(var i=0; i<childNodes.rows.length; i++){
             var childNode = childNodes.rows[i]
@@ -88,8 +111,8 @@ Page {
             if(childNode.type === Database.nodeTypeNOTE){
                 component = Qt.createComponent("../delegates/NodeNoteDelegate.qml")
                 node = component.createObject(delegateColumn,
-                                              {"id": childNode.id,
-                                               "parentId": childNode.parentId,
+                                              {"nodeId": childNode.id,
+                                               "parentNodeId": childNode.parentId,
                                                "position": childNode.position,
                                                "type": childNode.type,
                                                "title": childNode.title,
@@ -107,8 +130,8 @@ Page {
 
                 component = Qt.createComponent("../delegates/NodeTodoDelegate.qml")
                 node = component.createObject(delegateColumn,
-                                              {"id": childNode.id,
-                                               "parentId": childNode.parentId,
+                                              {"nodeId": childNode.id,
+                                               "parentNodeId": childNode.parentId,
                                                "position": childNode.position,
                                                "type": childNode.type,
                                                "title": childNode.title,
@@ -126,8 +149,8 @@ Page {
 
                 component = Qt.createComponent("../delegates/NodeCalcDelegate.qml")
                 node = component.createObject(delegateColumn,
-                                              {"id": childNode.id,
-                                               "parentId": childNode.parentId,
+                                              {"nodeId": childNode.id,
+                                               "parentNodeId": childNode.parentId,
                                                "position": childNode.position,
                                                "type": childNode.type,
                                                "title": childNode.title,
@@ -136,8 +159,8 @@ Page {
                                                "due_date": childNode.due_date,
                                                "mode": 0,
                                                "numChildren": Database.getNumChildren(childNodes.rows[i].id),
-                                               "operator": data.rows[0].operator,
-                                               "value": data.rows[0].value
+                                               "operator": "+",//data.rows[0].operator,
+                                               "value": "33.3"//data.rows[0].value
                                               })
             }
 
@@ -173,6 +196,22 @@ Page {
         contentWidth: parent.width
         contentHeight: contentColumn.height + Theme.paddingLarge
 
+        RemorsePopup {
+            id: deleteRemorsePopup
+
+            onTriggered: {
+                deleteStagedNodes()
+            }
+
+            onCanceled: {
+                for(var i=0; i<delegateColumn.children.length; ++i){
+                    if(delegateColumn.children[i].state === "STAGED_DELETION"){
+                        delegateColumn.children[i].state = "UNSELECTED"
+                    }
+                }
+            }
+        }
+
         PullDownMenu {
             id: pullDownMenu
             visible: appState === "VIEW"
@@ -183,8 +222,8 @@ Page {
 
             MenuItem {
                 text: qsTr("Add item")
-                /* onClicked: pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), {'parentNodeId': parentId, 'parentPage': itemView}) */
-                onClicked: pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), {'parentNodeId': parentId})
+                /* onClicked: pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), {'parentNodeId': parentId, 'parentPage': nodePage}) */
+                onClicked: pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), {'parentNodeId': parentNodeId})
             }
         }
 
@@ -206,17 +245,17 @@ Page {
             PageHeader {
                 id: pageHeader
                 title: {
-                    if(parentId <= 0){
+                    if(parentNodeId <= 0){
                         return "Home"
                     }else{
-                        return Database.getMetaNode(parentId).title
+                        return Database.getMetaNode(parentNodeId).title
                     }
                 }
                 description: {
-                    if(parentId <= 0){
+                    if(parentNodeId <= 0){
                         return ""
                     }else{
-                        return Database.getMetaNode(parentId).description
+                        return Database.getMetaNode(parentNodeId).description
                     }
                 }
             }
@@ -256,7 +295,7 @@ Page {
             Button {
                 text: "Paste"
                 onClicked: {
-                    Database.pasteNodes(pageStack.currentPage.parentId)
+                    Database.pasteNodes(pageStack.currentPage.parentNodeId)
                     Database.sanitizeNodePositions(appWindow.cutNodesParentId)
                     refreshView(true)
                     appWindow.state = "VIEW"
@@ -292,51 +331,59 @@ Page {
             Button {
                 text: "Cut"
                 onClicked: {
-                    var selectedIds = getSelection()
-                    Database.cutNodes(selectedIds)
+                    var selectedNodeIds = getSelection()
+                    Database.cutNodes(selectedNodeIds)
                     refreshView(true)
-                    appWindow.cutNodesParentId = pageStack.currentPage.parentId
+                    appWindow.cutNodesParentId = pageStack.currentPage.parentNodeId
                     appWindow.state = "PASTE"
                 }
             }
             Button {
                 text: "Delete"
                 onClicked: {
-                    var selectedIds = getSelection()
-                    for(var i=0; i<selectedIds.length; ++i){
-                        Database.deleteNode(selectedIds[i])
+                    /* deleteRemorsePopup.execute("Deleting", deleteSelectedNodes()) */
+                    deleteRemorsePopup.execute("Deleting", function() {})
+
+                    var selectedNodeIds = getSelection()
+                    for(var k=0; k<delegateColumn.children.length; ++k){
+                        if(delegateColumn.children[k].state === "SELECTED"){
+                            delegateColumn.children[k].state = "STAGED_DELETION"
+                        }
                     }
+
                     appWindow.state = "VIEW"
-                    refreshView(true)
+                    /* refreshView(true) */
                 }
             }
             Button {
                 text: "Share"
                 onClicked: Database.printTables()
+                enabled: false
             }
-            /* Button { */
-            /*     text: "Edit" */
+            Button {
+                text: "..."
+                enabled: false
 
-            /*     property var nodeIdToEdit: -1 */
+                /* property var nodeIdToEdit: -1 */
 
-            /*     Component.onCompleted: { */
-            /*         movementPanel.onVisibleChanged.connect(openEditPage) */
-            /*     } */
+                /* Component.onCompleted: { */
+                /*     movementPanel.onVisibleChanged.connect(openEditPage) */
+                /* } */
 
-            /*     onClicked: { */
-            /*         var selectedIds = getSelection() */
-            /*         nodeIdToEdit = Database.getMetaNode(selectedIds[0]).id */
-            /*         appWindow.state = "VIEW" */
-            /*     } */
+                /* onClicked: { */
+                /*     var selectedIds = getSelection() */
+                /*     nodeIdToEdit = Database.getMetaNode(selectedIds[0]).id */
+                /*     appWindow.state = "VIEW" */
+                /* } */
 
-            /*     function openEditPage() { */
-            /*         if(nodeIdToEdit > 0 && !movementPanel.visible){ */
-            /*             pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), */
-            /*                            { "nodeId": nodeIdToEdit }) */
-            /*             nodeIdToEdit = -1 */
-            /*         } */
-            /*     } */
-            /* } */
+                /* function openEditPage() { */
+                /*     if(nodeIdToEdit > 0 && !movementPanel.visible){ */
+                /*         pageStack.push(Qt.resolvedUrl("AddItemPage.qml"), */
+                /*                        { "nodeId": nodeIdToEdit }) */
+                /*         nodeIdToEdit = -1 */
+                /*     } */
+                /* } */
+            }
         }
 
         onOpenChanged: {
@@ -349,7 +396,7 @@ Page {
     DockedPanel {
         id: movementPanel
 
-        width: 150
+        width: 150 * Theme.pixelRatio
         anchors.top: parent.top
         anchors.topMargin: pageHeader.height
         anchors.bottom: parent.bottom
@@ -374,9 +421,9 @@ Page {
                 icon.source: "image://theme/icon-cover-next-song"
                 rotation: -90
                 onClicked: {
-                    var selectedIds = getSelection()
-                    for(var i=selectedIds.length - 1; i>=0; --i){
-                        Database.moveNodeTop(selectedIds[i])
+                    var selectedNodeIds = getSelection()
+                    for(var i=selectedNodeIds.length - 1; i>=0; --i){
+                        Database.moveNodeTop(selectedNodeIds[i])
                     }
                     refreshView(false)
                 }
@@ -385,9 +432,9 @@ Page {
                 icon.source: "image://theme/icon-cover-play"
                 rotation: -90
                 onClicked: {
-                    var selectedIds = getSelection()
-                    for(var i=0; i<selectedIds.length; ++i){
-                        Database.moveNodeUp(selectedIds[i])
+                    var selectedNodeIds = getSelection()
+                    for(var i=0; i<selectedNodeIds.length; ++i){
+                        Database.moveNodeUp(selectedNodeIds[i])
                     }
                     refreshView(false)
                 }
@@ -404,9 +451,9 @@ Page {
                 icon.source: "image://theme/icon-cover-play"
                 rotation: 90
                 onClicked: {
-                    var selectedIds = getSelection()
-                    for(var i=selectedIds.length-1; i>=0; --i){
-                        Database.moveNodeDown(selectedIds[i])
+                    var selectedNodeIds = getSelection()
+                    for(var i=selectedNodeIds.length-1; i>=0; --i){
+                        Database.moveNodeDown(selectedNodeIds[i])
                     }
                     refreshView(false)
                 }
@@ -415,9 +462,9 @@ Page {
                 icon.source: "image://theme/icon-cover-next-song"
                 rotation: 90
                 onClicked: {
-                    var selectedIds = getSelection()
-                    for(var i=0; i<selectedIds.length; ++i){
-                        Database.moveNodeBottom(selectedIds[i])
+                    var selectedNodeIds = getSelection()
+                    for(var i=0; i<selectedNodeIds.length; ++i){
+                        Database.moveNodeBottom(selectedNodeIds[i])
                     }
                     refreshView(false)
                 }

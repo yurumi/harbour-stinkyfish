@@ -5,8 +5,10 @@ Item {
     id: baseNode
     state: "UNSELECTED"
 
-    property int id: -1
-    property int parentId: -1
+    width: parent.width
+
+    property int nodeId: -1
+    property int parentNodeId: -1
     property int position: -1
     property string type: ""
     property string title: ""
@@ -23,6 +25,9 @@ Item {
         },
         State {
             name: "SELECTED"
+        },
+        State {
+            name: "STAGED_DELETION"
         }
     ]
 
@@ -30,9 +35,9 @@ Item {
     {
     }
 
-    function enterNode(id)
+    function enterNode(nodeId)
     {
-        pageStack.push(Qt.resolvedUrl("../pages/NodePage.qml"), {"parentId": id}, PageStackAction.Immediate)
+        pageStack.push(Qt.resolvedUrl("../pages/NodePage.qml"), {"parentNodeId": nodeId}, PageStackAction.Immediate)
     }
 
     function toggleSelection()
@@ -51,76 +56,18 @@ Item {
 
     function unselect()
     {
-        state = "UNSELECTED"
-    }
-
-    /* MouseArea { */
-        /* anchors.fill: parent */
-        /* onClicked: { */
-        /*     if(appWindow.state === "SELECT"){ */
-        /*         toggleSelection() */
-        /*     } */
-        /*     else{ */
-        /*         enterNode(baseNode.id) */
-        /*     } */
-        /* } */
-        /* onPressAndHold: { */
-        /*     appWindow.state = "SELECT" */
-        /*     toggleSelection() */
-        /* } */
-    /* } */
-
-    Column {
-        anchors.fill: parent
-        spacing: 10
-        z: 100
-        opacity: 0.5
-        visible: debugMode
-
-        Row {
-            height: 20
-            anchors.left: parent.left
-            anchors.right: parent.right
-            spacing: 10
-
-            Text {
-                font.pixelSize: 20
-                text: "id: " + baseNode.id
-            }
-
-            Text {
-                font.pixelSize: 20
-                text: "parentId: " + baseNode.parentId
-            }
-
-            Text {
-                font.pixelSize: 20
-                text: "position: " + baseNode.position
-            }
-
-            Text {
-                font.pixelSize: 20
-                text: "type: " + baseNode.type
-            }
-
-            Text {
-                font.pixelSize: 20
-                text: "prio: " + baseNode.priority
-            }
-
-            Text {
-                font.pixelSize: 20
-                text: "due: " + baseNode.due_date
-            }
+        if(state === "SELECTED"){
+            state = "UNSELECTED"
         }
     }
 
     Rectangle {
         id: selectionRect
         anchors.fill: parent
-        color: "black"
-        opacity: 0.5
-        visible: appWindow.state === "SELECT" && baseNode.state === "UNSELECTED"
+        color: Theme.overlayBackgroundColor
+        opacity: (appWindow.state === "SELECT" && baseNode.state === "UNSELECTED") || baseNode.state === "STAGED_DELETION" ? 0.5 : 0.0
         z: 100
+
+        Behavior on opacity { NumberAnimation { duration: 100 } }
     }
 }

@@ -1,61 +1,74 @@
 import QtQuick 2.0
+import Sailfish.Silica 1.0
+
+import "../js/Database.js" as Database
 
 BaseNode {
     id: baseNode
-    width: parent.width
-    height: 200
+    height: listItem.height
 
     property string operator: ""
     property string value: ""
 
-    Rectangle {
-	anchors.fill: parent
-	color: "blue"
+    ListItem {
+        id: listItem
+        width: parent.width
+        contentHeight: contentColumn.height
 
-	Column {
-	    anchors.fill: parent
-	    spacing: 10
-	    Row {
-		height: 20
-		anchors.left: parent.left
-		anchors.right: parent.right
-		spacing: 20
+        menu: BaseNodeContextMenu {}
 
-		Text {
-		    text: "id: " + baseNode.id
-		}
+        function showDeleteRemorseItem() {
+            deleteRemorse.execute(listItem, "Deleting", function() {
+                Database.deleteNode(baseNode.nodeId)
+                nodePage.refreshView(true)
+            } )
+        }
 
-		Text {
-		    text: "parentId: " + baseNode.parentId
-		}
+        onClicked: {
+            if(appWindow.state === "SELECT"){
+                toggleSelection()
+            }
+            else{
+                enterNode(baseNode.nodeId)
+            }
+        }
 
- 		Text {
-		    text: "position: " + baseNode.position
-		}
+        RemorseItem { id: deleteRemorse }
 
-		Text {
-		    text: "type: " + baseNode.type
-		}
+        Rectangle {
+            anchors.fill: parent
+            color: Theme.rgba(Theme.highlightBackgroundColor, 0.1)
+        }
 
-		Text {
-		    text: "prio: " + baseNode.priority
-		}
+        Column {
+            id: contentColumn
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: Theme.paddingLarge
+            height: titleRow.height
 
-		Text {
-		    text: "due: " + baseNode.due_date
-		}
-	    }
+            Item {
+                id: titleRow
+                width: parent.width
+                height: titleText.height + Theme.paddingMedium
 
-	    Row {
-		spacing: 50
-		Text {
-		    text: "operator: " + operator
-		}
+                Text {
+                    id: titleText
+                    anchors.left: parent.left
+                    anchors.right: if(childCounter.visible){childCounter.left}else{parent.right}
+                    text: baseNode.title
+                    font.pixelSize: Theme.fontSizeLarge
+                    clip: true
+                    wrapMode: Text.Wrap
+                    color: Theme.highlightColor
+                } // titleText
 
-		Text {
-		    text: "value: " + value
-		}
-	    }
-	}
-    }
+                ChildCountDisplay {
+                    id: childCounter
+                    numChildren: baseNode.numChildren
+                }
+            } // titleRow
+
+        } // contentColumn
+    } // listItem
 }

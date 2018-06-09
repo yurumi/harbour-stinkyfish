@@ -108,8 +108,6 @@ Dialog {
 
     SilicaFlickable {
         anchors.fill: parent
-        //	contentWidth: 300
-        //	contentHeight: 300
         contentWidth: parent.width
         contentHeight: addComponentsColumn.height
 
@@ -132,7 +130,7 @@ Dialog {
                     menu: ContextMenu {
                         MenuItem { text: Database.nodeTypeNOTE }
                         MenuItem { text: Database.nodeTypeTODO }
-                        MenuItem { text: Database.nodeTypeCALC }
+                        /* MenuItem { text: Database.nodeTypeCALC } */
                     }
                 }
 

@@ -1,40 +1,24 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../js/Database.js" as Database
+
 BaseNode {
     id: baseNode
-    width: parent.width
-    height: content.height
+    height: listItem.height
 
     ListItem {
-        id: content
+        id: listItem
         width: parent.width
-        /* anchors.left: parent.left */
-        /* anchors.right: parent.right */
-        /* height: contentColumn.height */
         contentHeight: contentColumn.height
 
-        Rectangle {
-            anchors.fill: parent
-            color: Theme.rgba(Theme.highlightBackgroundColor, 0.1)
-        }
+        menu: BaseNodeContextMenu {}
 
-        menu: ContextMenu {
-            MenuItem {
-                text: "Selection Mode"
-                onClicked: {
-                    appWindow.state = "SELECT"
-                    toggleSelection()
-                }
-            }
-            MenuItem {
-                text: "Edit"
-                /* onClicked: listModel.remove(model.index) */
-            }
-            MenuItem {
-                text: "Delete"
-                /* onClicked: listModel.remove(model.index) */
-            }
+        function showDeleteRemorseItem() {
+            deleteRemorse.execute(listItem, "Deleting", function() {
+                Database.deleteNode(baseNode.nodeId)
+                nodePage.refreshView(true)
+            } )
         }
 
         onClicked: {
@@ -42,8 +26,15 @@ BaseNode {
                 toggleSelection()
             }
             else{
-                enterNode(baseNode.id)
+                enterNode(baseNode.nodeId)
             }
+        }
+
+        RemorseItem { id: deleteRemorse }
+
+        Rectangle {
+            anchors.fill: parent
+            color: Theme.rgba(Theme.highlightBackgroundColor, 0.1)
         }
 
         Column {
@@ -56,7 +47,7 @@ BaseNode {
             Item {
                 id: titleRow
                 width: parent.width
-                height: titleText.height
+                height: titleText.height + Theme.paddingMedium
 
                 Text {
                     id: titleText
@@ -85,19 +76,18 @@ BaseNode {
 
                 Rectangle {
                     id: darkRect
-                    height: 1
+                    height: 1 * Theme.pixelRatio
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    color: "#cccccc"
+                    color: Theme.overlayBackgroundColor
                 }
 
                 Rectangle {
                     id: lightRect
-                    height: 1
+                    height: 1 * Theme.pixelRatio
                     anchors.top: darkRect.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    /* color: "#eeeeee" */
                     color: Theme.highlightColor
                 }
 
@@ -116,89 +106,5 @@ BaseNode {
             } // descriptionItem
 
         } // contentColumn
-    } // content
-
-    /* Rectangle { */
-    /*  id: contentRect */
-    /*  anchors.fill: parent */
-    /*  color: "green" */
-
-    /*  Column { */
-    /*      anchors.fill: parent */
-    /*      spacing: 10 */
-    /*      Row { */
-    /*    anchors.left: parent.left */
-    /*    anchors.right: parent.right */
-    /*    spacing: 20 */
-
-    /*    Text { */
-    /*        text: "id: " + baseNode.id */
-    /*    } */
-
-    /*    Text { */
-    /*        text: "parentId: " + baseNode.parentId */
-    /*    } */
-
-    /*    Text { */
-    /*        text: "position: " + baseNode.position */
-    /*    } */
-
-    /*    Text { */
-    /*        text: "type: " + baseNode.type */
-    /*    } */
-
-    /*    Text { */
-    /*        text: "prio: " + baseNode.priority */
-    /*    } */
-
-    /*    Text { */
-    /*        text: "due: " + baseNode.due_date */
-    /*    } */
-    /*      } */
-
-    /*      Row { */
-    /*    anchors.left: parent.left */
-    /*    anchors.right: parent.right */
-    /*    spacing: 20 */
-
-    /*    Text { */
-    /*        text: "title: " + baseNode.title */
-    /*    } */
-
-    /*    Text { */
-    /*        text: "desc: " + baseNode.description */
-    /*    } */
-    /*      } */
-
-    /*      Text { */
-    /*    visible: text.length > 0 */
-    /*    text: baseNode.description */
-    /*      } */
-
-    /*  } */
-
-    /*  /\* onCreatedChanged: { *\/ */
-    /*  /\*     if (created) { *\/ */
-    /*  /\*         sun.z = 1;    // above the sky but below the ground layer *\/ */
-    /*  /\*         window.activeSuns++; *\/ */
-    /*  /\*         // once item is created, start moving offscreen *\/ */
-    /*  /\*         dropYAnim.duration = (window.height + window.centerOffset - sun.y) * 16; *\/ */
-    /*  /\*         dropAnim.running = true; *\/ */
-    /*  /\*     } else { *\/ */
-    /*  /\*         window.activeSuns--; *\/ */
-    /*  /\*     } *\/ */
-    /*  /\* } *\/ */
-
-    /*  /\* SequentialAnimation on y{ *\/ */
-    /*  /\*     id: dropAnim *\/ */
-    /*  /\*     running: false *\/ */
-    /*  /\*     NumberAnimation { *\/ */
-    /*  /\*         id: dropYAnim *\/ */
-    /*  /\*         to: (window.height / 2) + window.centerOffset *\/ */
-    /*  /\*     } *\/ */
-    /*  /\*     ScriptAction { *\/ */
-    /*  /\*         script: { sun.created = false; sun.destroy() } *\/ */
-    /*  /\*     } *\/ */
-    /*  /\* } *\/ */
-    /* } */
+    } // listItem
 }

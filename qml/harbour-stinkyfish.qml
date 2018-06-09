@@ -8,7 +8,7 @@ import "js/Database.js" as Database
 ApplicationWindow
 {
     id: appWindow
-    initialPage: Component { NodePage { id: nodePage; parentId: 0 } }
+    initialPage: Component { NodePage { id: nodePage; parentNodeId: 0 } }
     /* initialPage: Component { Test{} } */
     state: "VIEW"
 
