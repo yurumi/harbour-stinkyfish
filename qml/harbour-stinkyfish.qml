@@ -35,13 +35,13 @@ ApplicationWindow
 	      id: initDataItem
 
 	      Component.onCompleted: {
-            Database.checkDbVersion()
-            /* Database.clear() */
-            /* Database.createNodeTodo({'parentId': 0, 'position': 0, 'type': Database.nodeTypeTODO, 'title': "todo 0.0", 'description': "uvleg uvle gvl e", 'priority': 0, 'due_date': ""}) */
-	          /* Database.createNodeTodo({'parentId': 0, 'position': 1, 'type': Database.nodeTypeTODO, 'title': "todo 0.1", 'description': "", 'priority': 1, 'due_date': ""}) */
-	          /* Database.createNodeTodo({'parentId': 1, 'position': 0, 'type': Database.nodeTypeTODO, 'title': "todo 1.0", 'description': "vflg", 'priority': 2, 'due_date': ""}) */
+          /* Database.clear() */
+          Database.checkDbVersion()
+          /* Database.createNodeTodo({'parentId': 0, 'position': 0, 'type': Database.nodeTypeTODO, 'title': "todo 0.0", 'description': "uvleg uvle gvl e", 'priority': 0, 'due_date': ""}) */
+	        /* Database.createNodeTodo({'parentId': 0, 'position': 1, 'type': Database.nodeTypeTODO, 'title': "todo 0.1", 'description': "", 'priority': 1, 'due_date': ""}) */
+	        /* Database.createNodeTodo({'parentId': 1, 'position': 0, 'type': Database.nodeTypeTODO, 'title': "todo 1.0", 'description': "vflg", 'priority': 2, 'due_date': ""}) */
 
-	          Database.printTables()
+	        Database.printTables()
 	      }
     }
 

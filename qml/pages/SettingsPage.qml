@@ -18,7 +18,7 @@ Dialog {
         /* settings.userToken = usertokenTF.text;       */
         /* settings.userName = usernameTF.text;       */
         /* settings.userPassword = userpasswordTF.text;       */
-    
+
         /* Database.transaction(function(tx) { */
         /*     Database.transactionSet(tx, "serverURL", settings.serverURL); */
         /*     Database.transactionSet(tx, "userID", settings.userID); */
@@ -27,7 +27,7 @@ Dialog {
         /*     Database.transactionSet(tx, "userPassword", settings.userPassword); */
         /* }); */
     }
-                   
+
     onAccepted: {
         acceptSettings()
     }
@@ -44,9 +44,16 @@ Dialog {
                 onClicked: {
                     remorseClearDatabase.execute(qsTr("Database is going to be cleared"),
                                                  function() { Database.clear(); })
-		}
+		        }
+	        }
+
+            MenuItem {
+                text: qsTr("Create Tutorial")
+                onClicked: {
+                    Database.createTutorial();
+		        }
+	        }
 	    }
-	}
 
         Column
         {
@@ -132,4 +139,3 @@ Dialog {
         }
     }
 }
-

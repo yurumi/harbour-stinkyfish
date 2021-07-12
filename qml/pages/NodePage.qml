@@ -104,12 +104,11 @@ Page {
 
         for(var i=0; i<childNodes.rows.length; i++){
             var childNode = childNodes.rows[i]
-            var component
             var node
             var data
 
             if(childNode.type === Database.nodeTypeNOTE){
-                component = Qt.createComponent("../delegates/NodeNoteDelegate.qml")
+                var component = Qt.createComponent("../delegates/NodeNoteDelegate.qml");
                 node = component.createObject(delegateColumn,
                                               {"nodeId": childNode.id,
                                                "parentNodeId": childNode.parentId,
@@ -128,7 +127,7 @@ Page {
                 // type specific data
                 data = Database.getNodeDataTodo(childNode.id)
 
-                component = Qt.createComponent("../delegates/NodeTodoDelegate.qml")
+                var component = Qt.createComponent("../delegates/NodeTodoDelegate.qml")
                 node = component.createObject(delegateColumn,
                                               {"nodeId": childNode.id,
                                                "parentNodeId": childNode.parentId,
@@ -147,7 +146,7 @@ Page {
                 // type specific data
                 data = Database.getNodeDataCalc(childNode.id)
 
-                component = Qt.createComponent("../delegates/NodeCalcDelegate.qml")
+                var component = Qt.createComponent("../delegates/NodeCalcDelegate.qml")
                 node = component.createObject(delegateColumn,
                                               {"nodeId": childNode.id,
                                                "parentNodeId": childNode.parentId,
@@ -229,7 +228,7 @@ Page {
 
         ViewPlaceholder {
             enabled: delegateColumn.children.length === 0
-            text: qsTr("Pull up/down to add items.")
+            text: qsTr("Pull down to add items.")
         }
 
         VerticalScrollDecorator {
