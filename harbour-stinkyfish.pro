@@ -12,9 +12,9 @@
 # The name of your application
 TARGET = harbour-stinkyfish
 
-CONFIG += sailfishapp
+CONFIG += sailfishapp_qml
 
-SOURCES += src/harbour-stinkyfish.cpp
+SOURCES += 
 
 OTHER_FILES += qml/harbour-stinkyfish.qml \
     qml/cover/CoverPage.qml \

@@ -2,6 +2,6 @@
 Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-stinkyfish
-Exec=harbour-stinkyfish
+Exec=sailfish-qml harbour-stinkyfish
 Name=Stinkyfish
 
