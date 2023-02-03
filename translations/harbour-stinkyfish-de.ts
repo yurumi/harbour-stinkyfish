@@ -11,10 +11,6 @@
 <context>
     <name>NodePage</name>
     <message>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Add item</source>
         <translation type="unfinished"></translation>
     </message>

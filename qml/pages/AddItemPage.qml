@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-import "../js/Database.js" as Database
+/* import "../js/Database.js" as Database */
 import "../delegates"
 
 Dialog {
@@ -39,7 +39,8 @@ Dialog {
 
     function acceptNode(){
         if(position == -1){
-            position = Database.getNumChildren(parentNodeId)
+            // TODO
+            /* position = Database.getNumChildren(parentNodeId) */
         }
 
         var data = { 'parentId': parentNodeId,
@@ -52,19 +53,20 @@ Dialog {
                      'mode': 0
                    };
 
-        if(nodeType === Database.nodeTypeNOTE){
-        }
-        else if(nodeType === Database.nodeTypeTODO){
-            data.status = dynamicObject.status;
-            data.mode = dynamicObject.mode;
-        }
+        // TODO
+        /* if(nodeType === Database.nodeTypeNOTE){ */
+        /* } */
+        /* else if(nodeType === Database.nodeTypeTODO){ */
+        /*     data.status = dynamicObject.status; */
+        /*     data.mode = dynamicObject.mode; */
+        /* } */
 
-        if(state === "EDIT"){
-            data["id"] = nodeId
-            Database.updateNode(data);
-        }else{
-            nodeId = Database.createNode(data);
-        }
+        /* if(state === "EDIT"){ */
+        /*     data["id"] = nodeId */
+        /*     Database.updateNode(data); */
+        /* }else{ */
+        /*     nodeId = Database.createNode(data); */
+        /* } */
     }
 
     onAccepted: acceptNode()

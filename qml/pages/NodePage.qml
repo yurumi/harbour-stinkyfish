@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-import "../js/Database.js" as Database
+/* import "../js/Database.js" as Database */
 import "../delegates"
 
 Page {
@@ -35,7 +35,8 @@ Page {
 
     function cancelCutNodes()
     {
-        Database.cancelCutNodes(appWindow.cutNodesParentId)
+        // TODO
+        /* Database.cancelCutNodes(appWindow.cutNodesParentId) */
         refreshView(true)
     }
 
@@ -51,7 +52,8 @@ Page {
     {
         var stagedNodeIds = getStagedDeletion()
         for(var i=0; i<stagedNodeIds.length; ++i){
-            Database.deleteNode(stagedNodeIds[i])
+            // TODO
+            /* Database.deleteNode(stagedNodeIds[i]) */
         }
         /* appWindow.state = "VIEW" */
         refreshView(true)
@@ -100,77 +102,78 @@ Page {
 
     function createView()
     {
-        var childNodes = Database.getChildNodes(parentNodeId)
+        // TODO
+        /* var childNodes = Database.getChildNodes(parentNodeId) */
 
-        for(var i=0; i<childNodes.rows.length; i++){
-            var childNode = childNodes.rows[i]
-            var component
-            var node
-            var data
+        /* for(var i=0; i<childNodes.rows.length; i++){ */
+        /*     var childNode = childNodes.rows[i] */
+        /*     var component */
+        /*     var node */
+        /*     var data */
 
-            if(childNode.type === Database.nodeTypeNOTE){
-                component = Qt.createComponent("../delegates/NodeNoteDelegate.qml")
-                node = component.createObject(delegateColumn,
-                                              {"nodeId": childNode.id,
-                                               "parentNodeId": childNode.parentId,
-                                               "position": childNode.position,
-                                               "type": childNode.type,
-                                               "title": childNode.title,
+        /*     if(childNode.type === Database.nodeTypeNOTE){ */
+        /*         component = Qt.createComponent("../delegates/NodeNoteDelegate.qml") */
+        /*         node = component.createObject(delegateColumn, */
+        /*                                       {"nodeId": childNode.id, */
+        /*                                        "parentNodeId": childNode.parentId, */
+        /*                                        "position": childNode.position, */
+        /*                                        "type": childNode.type, */
+        /*                                        "title": childNode.title, */
 
-                                               "description": childNode.description,
-                                               "priority": childNode.priority,
-                                               "due_date": childNode.due_date,
-                                               "mode": 0,
-                                               "numChildren": Database.getNumChildren(childNodes.rows[i].id)
-                                              })
-            }
-            else if(childNode.type === Database.nodeTypeTODO){
-                // type specific data
-                data = Database.getNodeDataTodo(childNode.id)
+        /*                                        "description": childNode.description, */
+        /*                                        "priority": childNode.priority, */
+        /*                                        "due_date": childNode.due_date, */
+        /*                                        "mode": 0, */
+        /*                                        "numChildren": Database.getNumChildren(childNodes.rows[i].id) */
+        /*                                       }) */
+        /*     } */
+        /*     else if(childNode.type === Database.nodeTypeTODO){ */
+        /*         // type specific data */
+        /*         data = Database.getNodeDataTodo(childNode.id) */
 
-                component = Qt.createComponent("../delegates/NodeTodoDelegate.qml")
-                node = component.createObject(delegateColumn,
-                                              {"nodeId": childNode.id,
-                                               "parentNodeId": childNode.parentId,
-                                               "position": childNode.position,
-                                               "type": childNode.type,
-                                               "title": childNode.title,
-                                               "description": childNode.description,
-                                               "priority": childNode.priority,
-                                               "due_date": childNode.due_date,
-                                               "mode": childNode.mode,
-                                               "numChildren": Database.getNumChildren(childNodes.rows[i].id),
-                                               "status": data.rows[0].status
-                                              })
-            }
-            else if(childNodes.rows[i].type === Database.nodeTypeCALC){
-                // type specific data
-                data = Database.getNodeDataCalc(childNode.id)
+        /*         component = Qt.createComponent("../delegates/NodeTodoDelegate.qml") */
+        /*         node = component.createObject(delegateColumn, */
+        /*                                       {"nodeId": childNode.id, */
+        /*                                        "parentNodeId": childNode.parentId, */
+        /*                                        "position": childNode.position, */
+        /*                                        "type": childNode.type, */
+        /*                                        "title": childNode.title, */
+        /*                                        "description": childNode.description, */
+        /*                                        "priority": childNode.priority, */
+        /*                                        "due_date": childNode.due_date, */
+        /*                                        "mode": childNode.mode, */
+        /*                                        "numChildren": Database.getNumChildren(childNodes.rows[i].id), */
+        /*                                        "status": data.rows[0].status */
+        /*                                       }) */
+        /*     } */
+        /*     else if(childNodes.rows[i].type === Database.nodeTypeCALC){ */
+        /*         // type specific data */
+        /*         data = Database.getNodeDataCalc(childNode.id) */
 
-                component = Qt.createComponent("../delegates/NodeCalcDelegate.qml")
-                node = component.createObject(delegateColumn,
-                                              {"nodeId": childNode.id,
-                                               "parentNodeId": childNode.parentId,
-                                               "position": childNode.position,
-                                               "type": childNode.type,
-                                               "title": childNode.title,
-                                               "description": childNode.description,
-                                               "priority": childNode.priority,
-                                               "due_date": childNode.due_date,
-                                               "mode": 0,
-                                               "numChildren": Database.getNumChildren(childNodes.rows[i].id),
-                                               "operator": "+",//data.rows[0].operator,
-                                               "value": "33.3"//data.rows[0].value
-                                              })
-            }
+        /*         component = Qt.createComponent("../delegates/NodeCalcDelegate.qml") */
+        /*         node = component.createObject(delegateColumn, */
+        /*                                       {"nodeId": childNode.id, */
+        /*                                        "parentNodeId": childNode.parentId, */
+        /*                                        "position": childNode.position, */
+        /*                                        "type": childNode.type, */
+        /*                                        "title": childNode.title, */
+        /*                                        "description": childNode.description, */
+        /*                                        "priority": childNode.priority, */
+        /*                                        "due_date": childNode.due_date, */
+        /*                                        "mode": 0, */
+        /*                                        "numChildren": Database.getNumChildren(childNodes.rows[i].id), */
+        /*                                        "operator": "+",//data.rows[0].operator, */
+        /*                                        "value": "33.3"//data.rows[0].value */
+        /*                                       }) */
+        /*     } */
 
-            if (node == null) {
-                // Error Handling
-                console.log("Error creating object");
-            }else{
-                node.update();
-            }
-        }// for
+        /*     if (node == null) { */
+        /*         // Error Handling */
+        /*         console.log("Error creating object"); */
+        /*     }else{ */
+        /*         node.update(); */
+        /*     } */
+        /* }// for */
     }
 
     Component.onCompleted: {
@@ -215,10 +218,10 @@ Page {
         PullDownMenu {
             id: pullDownMenu
             visible: appState === "VIEW"
-            MenuItem {
-                text: qsTr("Settings")
-                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-            }
+            /* MenuItem { */
+            /*     text: qsTr("Settings") */
+            /*     onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml")) */
+            /* } */
 
             MenuItem {
                 text: qsTr("Add item")
@@ -248,14 +251,18 @@ Page {
                     if(parentNodeId <= 0){
                         return "Home"
                     }else{
-                        return Database.getMetaNode(parentNodeId).title
+                        // TODO
+                        /* return Database.getMetaNode(parentNodeId).title */
+                        return "---"
                     }
                 }
                 description: {
                     if(parentNodeId <= 0){
                         return ""
                     }else{
-                        return Database.getMetaNode(parentNodeId).description
+                        // TODO
+                        /* return Database.getMetaNode(parentNodeId).description */
+                        return "ddd"
                     }
                 }
             }
@@ -295,8 +302,9 @@ Page {
             Button {
                 text: "Paste"
                 onClicked: {
-                    Database.pasteNodes(pageStack.currentPage.parentNodeId)
-                    Database.sanitizeNodePositions(appWindow.cutNodesParentId)
+                    // TODO
+                    /* Database.pasteNodes(pageStack.currentPage.parentNodeId) */
+                    /* Database.sanitizeNodePositions(appWindow.cutNodesParentId) */
                     refreshView(true)
                     appWindow.state = "VIEW"
                 }
@@ -332,7 +340,8 @@ Page {
                 text: "Cut"
                 onClicked: {
                     var selectedNodeIds = getSelection()
-                    Database.cutNodes(selectedNodeIds)
+                    // TODO
+                    /* Database.cutNodes(selectedNodeIds) */
                     refreshView(true)
                     appWindow.cutNodesParentId = pageStack.currentPage.parentNodeId
                     appWindow.state = "PASTE"
@@ -357,7 +366,8 @@ Page {
             }
             Button {
                 text: "Share"
-                onClicked: Database.printTables()
+                // TODO
+                /* onClicked: Database.printTables() */
                 enabled: false
             }
             Button {
@@ -423,7 +433,8 @@ Page {
                 onClicked: {
                     var selectedNodeIds = getSelection()
                     for(var i=selectedNodeIds.length - 1; i>=0; --i){
-                        Database.moveNodeTop(selectedNodeIds[i])
+                        // TODO
+                        /* Database.moveNodeTop(selectedNodeIds[i]) */
                     }
                     refreshView(false)
                 }
@@ -434,7 +445,8 @@ Page {
                 onClicked: {
                     var selectedNodeIds = getSelection()
                     for(var i=0; i<selectedNodeIds.length; ++i){
-                        Database.moveNodeUp(selectedNodeIds[i])
+                        // TODO
+                        /* Database.moveNodeUp(selectedNodeIds[i]) */
                     }
                     refreshView(false)
                 }
@@ -453,7 +465,8 @@ Page {
                 onClicked: {
                     var selectedNodeIds = getSelection()
                     for(var i=selectedNodeIds.length-1; i>=0; --i){
-                        Database.moveNodeDown(selectedNodeIds[i])
+                        // TODO
+                        /* Database.moveNodeDown(selectedNodeIds[i]) */
                     }
                     refreshView(false)
                 }
@@ -464,7 +477,8 @@ Page {
                 onClicked: {
                     var selectedNodeIds = getSelection()
                     for(var i=0; i<selectedNodeIds.length; ++i){
-                        Database.moveNodeBottom(selectedNodeIds[i])
+                        // TODO
+                        /* Database.moveNodeBottom(selectedNodeIds[i]) */
                     }
                     refreshView(false)
                 }

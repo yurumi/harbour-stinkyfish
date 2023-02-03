@@ -22,6 +22,15 @@ OTHER_FILES += qml/harbour-stinkyfish.qml \
     rpm/harbour-stinkyfish.spec \
     rpm/harbour-stinkyfish.yaml \
     translations/*.ts \
+    qml/python/entry_point.py \
+    qml/python/file_database.py \
+    qml/python/node_cache.py \
+    qml/python/node_manager.py \
+    qml/python/node_factory.py \
+    qml/python/node.py \
+    qml/python/note_node.py \
+    qml/python/todo_node.py \
+    qml/python/pyologger.py \
     harbour-stinkyfish.desktop
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
@@ -49,4 +58,3 @@ DISTFILES += \
     qml/delegates/NodeTodoDelegate.qml \
     qml/pages/AddItemPage.qml \
     qml/pages/SettingsPage.qml
-
