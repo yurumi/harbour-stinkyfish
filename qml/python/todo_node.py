@@ -11,8 +11,8 @@ class TodoNode(NoteNode):
     def __init__(self):
         super().__init__()
 
-    def _create_org_string_from_data(self, data):
-        return super()._create_org_string_from_data(data)
+    def create_org_string_from_data(self, data):
+        return super().create_org_string_from_data(data)
 
-    def _parse_string(self):
-        super()._parse_string()
+    def parse_org_string(self, data):
+        super().parse_org_string(data)

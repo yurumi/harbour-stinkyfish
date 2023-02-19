@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-import "../js/Database.js" as Database
 
 BaseNode {
     id: baseNode
@@ -16,7 +15,8 @@ BaseNode {
 
         function showDeleteRemorseItem() {
             deleteRemorse.execute(listItem, "Deleting", function() {
-                Database.deleteNode(baseNode.nodeId)
+                // TODO
+                /* Database.deleteNode(baseNode.nodeId) */
                 nodePage.refreshView(true)
             } )
         }
@@ -26,7 +26,7 @@ BaseNode {
                 toggleSelection()
             }
             else{
-                enterNode(baseNode.nodeId)
+                baseNode.entered(baseNode.nodeId)
             }
         }
 

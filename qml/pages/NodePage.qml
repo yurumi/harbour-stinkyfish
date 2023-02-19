@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import io.thp.pyotherside 1.4
 
-/* import "../js/Database.js" as Database */
 import "../delegates"
 
 Page {
@@ -9,7 +9,8 @@ Page {
 
     backNavigation: appWindow.state !== 'SELECT'
 
-    property int parentNodeId: -1
+    property string rootNodeId: appWindow.rootNodeId
+    property string parentNodeId: ''
     property var appState: appWindow.state
 
     onAppStateChanged: {
@@ -33,11 +34,19 @@ Page {
         }
     }
 
+    function handleNodeEntered(nodeId)
+    {
+        pageStack.push(
+            Qt.resolvedUrl("../pages/NodePage.qml"),
+            {"parentNodeId": nodeId})
+            /* PageStackAction.Immediate) */
+    }
+
     function cancelCutNodes()
     {
         // TODO
         /* Database.cancelCutNodes(appWindow.cutNodesParentId) */
-        refreshView(true)
+        /* refreshView(true) */
     }
 
     function clearSelection()
@@ -56,7 +65,7 @@ Page {
             /* Database.deleteNode(stagedNodeIds[i]) */
         }
         /* appWindow.state = "VIEW" */
-        refreshView(true)
+        /* refreshView(true) */
     }
 
     function getSelection()
@@ -88,7 +97,7 @@ Page {
         for(var i=0; i<delegateColumn.children.length; ++i){
             delegateColumn.children[i].destroy()
         }
-        createView()
+        requestChildNodeData()
         if(!clearSelection){
             for(var i=0; i<selectedNodeIds.length; ++i){
                 for(var k=0; k<delegateColumn.children.length; ++k){
@@ -100,33 +109,45 @@ Page {
         }
     }
 
-    function createView()
+    function requestChildNodeData()
     {
+        python.requestChildNodeData(parentNodeId)
+    }
+
+    function createDelegate(data)
+    {
+        if (data['parent_id'] !== parentNodeId) {
+            return
+        }
+
+        console.log(parentNodeId, '  -> child data received -> create delegate')
+        console.log('\tid:', data['id'])
+        console.log('\ttype:', data['type'])
+
+        var component
+        var node
+
         // TODO
-        /* var childNodes = Database.getChildNodes(parentNodeId) */
+        if(data['type'] === 'Note'){
+            component = Qt.createComponent("../delegates/NodeNoteDelegate.qml")
+            node = component.createObject(
+                delegateColumn,
+                {
+                    "nodePage": nodePage,
+                    "nodeId": data['id'],
+                    "parentNodeId": data['parent_id'],
+                    "position": 0,
+                    "type": data['type'],
+                    "title": data['title'],
 
-        /* for(var i=0; i<childNodes.rows.length; i++){ */
-        /*     var childNode = childNodes.rows[i] */
-        /*     var component */
-        /*     var node */
-        /*     var data */
-
-        /*     if(childNode.type === Database.nodeTypeNOTE){ */
-        /*         component = Qt.createComponent("../delegates/NodeNoteDelegate.qml") */
-        /*         node = component.createObject(delegateColumn, */
-        /*                                       {"nodeId": childNode.id, */
-        /*                                        "parentNodeId": childNode.parentId, */
-        /*                                        "position": childNode.position, */
-        /*                                        "type": childNode.type, */
-        /*                                        "title": childNode.title, */
-
-        /*                                        "description": childNode.description, */
-        /*                                        "priority": childNode.priority, */
-        /*                                        "due_date": childNode.due_date, */
-        /*                                        "mode": 0, */
-        /*                                        "numChildren": Database.getNumChildren(childNodes.rows[i].id) */
-        /*                                       }) */
-        /*     } */
+                    "description": data['description'],
+                    "priority": 0,
+                    "due_date": '',
+                    "mode": 0,
+                    "numChildren": data['num_children']}
+            )
+            node.entered.connect(nodePage.handleNodeEntered)
+        }
         /*     else if(childNode.type === Database.nodeTypeTODO){ */
         /*         // type specific data */
         /*         data = Database.getNodeDataTodo(childNode.id) */
@@ -167,17 +188,15 @@ Page {
         /*                                       }) */
         /*     } */
 
-        /*     if (node == null) { */
-        /*         // Error Handling */
-        /*         console.log("Error creating object"); */
-        /*     }else{ */
-        /*         node.update(); */
-        /*     } */
-        /* }// for */
+        if (node == null) {
+            // Error Handling
+            console.log("Error creating object");
+        }else{
+            node.update();
+        }
     }
 
     Component.onCompleted: {
-        createView()
     }
 
     onStatusChanged: {
@@ -186,6 +205,15 @@ Page {
         }
     }
 
+    Python {
+        id: np_python
+
+        Component.onCompleted: {
+            setHandler('child_node_data', function(data) {
+                createDelegate(data)
+            });
+        }
+    }
 
     SilicaFlickable {
         anchors {
@@ -232,7 +260,7 @@ Page {
 
         ViewPlaceholder {
             enabled: delegateColumn.children.length === 0
-            text: qsTr("Pull up/down to add items.")
+            text: qsTr("Pull down to add items.")
         }
 
         VerticalScrollDecorator {
@@ -248,7 +276,7 @@ Page {
             PageHeader {
                 id: pageHeader
                 title: {
-                    if(parentNodeId <= 0){
+                    if(parentNodeId === rootNodeId){
                         return "Home"
                     }else{
                         // TODO
@@ -257,7 +285,7 @@ Page {
                     }
                 }
                 description: {
-                    if(parentNodeId <= 0){
+                    if(parentNodeId === rootNodeId){
                         return ""
                     }else{
                         // TODO
@@ -305,7 +333,7 @@ Page {
                     // TODO
                     /* Database.pasteNodes(pageStack.currentPage.parentNodeId) */
                     /* Database.sanitizeNodePositions(appWindow.cutNodesParentId) */
-                    refreshView(true)
+                    /* refreshView(true) */
                     appWindow.state = "VIEW"
                 }
             }
@@ -342,7 +370,7 @@ Page {
                     var selectedNodeIds = getSelection()
                     // TODO
                     /* Database.cutNodes(selectedNodeIds) */
-                    refreshView(true)
+                    /* refreshView(true) */
                     appWindow.cutNodesParentId = pageStack.currentPage.parentNodeId
                     appWindow.state = "PASTE"
                 }
@@ -436,7 +464,7 @@ Page {
                         // TODO
                         /* Database.moveNodeTop(selectedNodeIds[i]) */
                     }
-                    refreshView(false)
+                    /* refreshView(false) */
                 }
             }
             IconButton {
@@ -448,7 +476,7 @@ Page {
                         // TODO
                         /* Database.moveNodeUp(selectedNodeIds[i]) */
                     }
-                    refreshView(false)
+                    /* refreshView(false) */
                 }
             }
 
@@ -468,7 +496,7 @@ Page {
                         // TODO
                         /* Database.moveNodeDown(selectedNodeIds[i]) */
                     }
-                    refreshView(false)
+                    /* refreshView(false) */
                 }
             }
             IconButton {
@@ -480,7 +508,7 @@ Page {
                         // TODO
                         /* Database.moveNodeBottom(selectedNodeIds[i]) */
                     }
-                    refreshView(false)
+                    /* refreshView(false) */
                 }
             }
         }

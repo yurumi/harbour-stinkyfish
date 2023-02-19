@@ -15,7 +15,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Pull up/down to add items.</source>
+        <source>Pull down to add items.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

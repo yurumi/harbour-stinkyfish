@@ -12,17 +12,61 @@ def sut():
     return NodeFactory()
 
 
-def test_create_node_when_note_node(sut):
-    data = {'id': '1-2-3', 'type': NoteNode.TYPE, 'version': 2, 'title': 'check it out', 'description': 'desc'}
+def test_create_root_node(sut):
+    result = sut.create_root_node()
 
-    result = sut.create_node(data)
+    assert result.type == 'root'
+    assert result.id == '00000000-0000-0000-0000-000000000000'
+    assert result.org_data is not None
+
+
+def test_create_node_from_data_when_note_node(sut, node_data_template):
+    node_data_template['type'] = NoteNode.TYPE
+    node_data_template['description'] = 'desc'
+
+    expected_title = 'check it out'
+
+    result = sut.create_node_from_data(node_data_template)
 
     assert type(result) is NoteNode
+    assert expected_title == result.title
+    assert result.org_data is not None
 
 
-def test_create_node_when_todo_node(sut):
-    data = {'id': '1-2-3', 'type': TodoNode.TYPE, 'version': 2, 'title': 'check it out', 'description': 'desc'}
+def test_create_node_from_data_when_todo_node(sut, node_data_template):
+    node_data_template['type'] = TodoNode.TYPE
+    node_data_template['description'] = 'desc'
 
-    result = sut.create_node(data)
+    expected_title = 'check it out'
+
+    result = sut.create_node_from_data(node_data_template)
 
     assert type(result) is TodoNode
+    assert expected_title == result.title
+    assert result.org_data is not None
+
+
+def test_create_node_from_org_string_when_note_node(sut, org_valid_header, org_empty_children):
+    org_valid_header = org_valid_header.replace(':TYPE: test', f':TYPE: {NoteNode.TYPE}')
+    org_string = ''.join([org_valid_header, org_empty_children, '* Description\n'])
+
+    expected_title = 'check it out'
+
+    result = sut.create_node_from_org_string(org_string)
+
+    assert type(result) is NoteNode
+    assert expected_title == result.title
+    assert result.org_data is not None
+
+
+def test_create_node_from_org_string_when_todo_node(sut, org_valid_header, org_empty_children):
+    org_valid_header = org_valid_header.replace(':TYPE: test', f':TYPE: {TodoNode.TYPE}')
+    org_string = ''.join([org_valid_header, org_empty_children, '* Description\n'])
+
+    expected_title = 'check it out'
+
+    result = sut.create_node_from_org_string(org_string)
+
+    assert type(result) is TodoNode
+    assert expected_title == result.title
+    assert result.org_data is not None

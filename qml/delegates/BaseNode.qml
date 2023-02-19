@@ -7,8 +7,9 @@ Item {
 
     width: parent.width
 
-    property int nodeId: -1
-    property int parentNodeId: -1
+    property var nodePage: undefined
+    property string nodeId: ''
+    property string parentNodeId: ''
     property int position: -1
     property string type: ""
     property string title: ""
@@ -18,6 +19,8 @@ Item {
     property int mode: 0
     property int numChildren: 0
     property bool debugMode: false
+
+    signal entered(string id)
 
     states: [
         State {
@@ -33,11 +36,6 @@ Item {
 
     function update()
     {
-    }
-
-    function enterNode(nodeId)
-    {
-        pageStack.push(Qt.resolvedUrl("../pages/NodePage.qml"), {"parentNodeId": nodeId}, PageStackAction.Immediate)
     }
 
     function toggleSelection()
@@ -69,5 +67,9 @@ Item {
         z: 100
 
         Behavior on opacity { NumberAnimation { duration: 100 } }
+    }
+
+    Component.onCompleted: {
+
     }
 }

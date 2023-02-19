@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-/* import "../js/Database.js" as Database */
 import "../delegates"
 
 Dialog {
@@ -9,8 +8,8 @@ Dialog {
     state: "CREATE"
 
     /* property var parentPage */
-    property int nodeId: -1
-    property int parentNodeId: -1
+    property string nodeId: ''
+    property string parentNodeId: ''
     property int position: -1
     property alias nodeType: nodeTypeCombo.value
 
@@ -43,52 +42,56 @@ Dialog {
             /* position = Database.getNumChildren(parentNodeId) */
         }
 
-        var data = { 'parentId': parentNodeId,
-                     'position': position,
-                     'type': nodeType,
-                     'title': titleField.text,
-                     'description': descriptionField.text,
-                     'priority': priorityCombo.currentIndex,
-                     'due_date': "",
-                     'mode': 0
-                   };
+        var data = {
+            'id': python.generateNodeId(),
+            'parent_id': parentNodeId,
+            'type': nodeType,
+            'version': 1,
+            'title': titleField.text,
+            'description': descriptionField.text,
+            'priority': priorityCombo.currentIndex,
+            'due_date': "",
+            'mode': 0
+        };
 
         // TODO
-        /* if(nodeType === Database.nodeTypeNOTE){ */
-        /* } */
-        /* else if(nodeType === Database.nodeTypeTODO){ */
-        /*     data.status = dynamicObject.status; */
-        /*     data.mode = dynamicObject.mode; */
-        /* } */
+        if(nodeType === 'Note'){
+        }
+        else if(nodeType === 'TODO'){
+            data.status = dynamicObject.status;
+            data.mode = dynamicObject.mode;
+        }
 
-        /* if(state === "EDIT"){ */
-        /*     data["id"] = nodeId */
-        /*     Database.updateNode(data); */
-        /* }else{ */
-        /*     nodeId = Database.createNode(data); */
-        /* } */
+        if(state === 'EDIT'){
+            data['id'] = nodeId;
+            // TODO
+            /* Database.updateNode(data); */
+        }else{
+            python.createNode(data);
+        }
     }
 
     onAccepted: acceptNode()
 
-    onNodeIdChanged: {
-        state = "EDIT"
-        nodeTypeCombo.enabled = false
-        var node = Database.getMetaNode(nodeId)
-        parentNodeId = node.parentId
-        position = node.position
-        nodeType = node.type
-        titleField.text = node.title
-        descriptionField.text = node.description
-        priorityCombo.currentIndex = node.priority
-    }
+    /* onNodeIdChanged: { */
+    /*     state = "EDIT" */
+    /*     nodeTypeCombo.enabled = false */
+    /*     var node = Database.getMetaNode(nodeId) */
+    /*     parentNodeId = node.parentId */
+    /*     position = node.position */
+    /*     nodeType = node.type */
+    /*     titleField.text = node.title */
+    /*     descriptionField.text = node.description */
+    /*     priorityCombo.currentIndex = node.priority */
+    /* } */
 
     onNodeTypeChanged: {
         if(dynamicObject != null){
             dynamicObject.destroy()
         }
 
-        if(nodeType === Database.nodeTypeTODO){
+        // TODO
+        if(nodeType === 'TODO'){
             dynamicComponent = Qt.createComponent("../delegates/NodeTodoEditDelegate.qml")
             if (dynamicComponent.status == Component.Ready)
                 createDynamicObject();
@@ -96,15 +99,16 @@ Dialog {
                 dynamicComponent.statusChanged.connect(createDynamicObject);
         }
 
-        if(state === "EDIT"){
-            var metaNode = Database.getMetaNode(nodeId)
+        // TODO
+        /* if(state === "EDIT"){ */
+        /*     var metaNode = Database.getMetaNode(nodeId) */
 
-            if(nodeType === Database.nodeTypeTODO){
-                var customData = Database.getNodeDataTodo(nodeId)
-                dynamicObject.status = customData.rows.item(0).status
-                dynamicObject.mode = metaNode.mode
-            }
-        }
+        /*     if(nodeType === Database.nodeTypeTODO){ */
+        /*         var customData = Database.getNodeDataTodo(nodeId) */
+        /*         dynamicObject.status = customData.rows.item(0).status */
+        /*         dynamicObject.mode = metaNode.mode */
+        /*     } */
+        /* } */
     }
 
 
@@ -129,10 +133,10 @@ Dialog {
                     label: "Type"
                     width: parent.width / 2
 
+                    // TODO: aus node_factory/python holen
                     menu: ContextMenu {
-                        MenuItem { text: Database.nodeTypeNOTE }
-                        MenuItem { text: Database.nodeTypeTODO }
-                        /* MenuItem { text: Database.nodeTypeCALC } */
+                        MenuItem { text: 'Note' }
+                        MenuItem { text: 'TODO' }
                     }
                 }
 
@@ -169,7 +173,6 @@ Dialog {
 
                     onClicked: {
                         acceptNode()
-                        console.log("id:", nodeId, "parentId:", parentNodeId)
                         pageStack.replace(Qt.resolvedUrl("AddItemPage.qml"), {'parentNodeId': nodeId})
                     }
                 }

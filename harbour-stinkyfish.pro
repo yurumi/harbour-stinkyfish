@@ -25,12 +25,14 @@ OTHER_FILES += qml/harbour-stinkyfish.qml \
     qml/python/entry_point.py \
     qml/python/file_database.py \
     qml/python/node_cache.py \
+    qml/python/node_id_generator.py \
     qml/python/node_manager.py \
     qml/python/node_factory.py \
     qml/python/node.py \
     qml/python/note_node.py \
     qml/python/todo_node.py \
     qml/python/pyologger.py \
+    qml/python/PyOrgMode.py \
     harbour-stinkyfish.desktop
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
