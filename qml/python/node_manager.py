@@ -30,6 +30,7 @@ class NodeManager:
         node = self.node_factory.create_node_from_data(data)
         self.file_database.save_to_file(node)
         self.register_node_to_parent(node)
+        self.send_fcn('child_node_data', data)
         return node.id
 
     def request_child_node_data(self, parent_node_id):

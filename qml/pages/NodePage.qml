@@ -9,7 +9,6 @@ Page {
 
     backNavigation: appWindow.state !== 'SELECT'
 
-    property string rootNodeId: appWindow.rootNodeId
     property string parentNodeId: ''
     property var appState: appWindow.state
 
@@ -39,7 +38,7 @@ Page {
         pageStack.push(
             Qt.resolvedUrl("../pages/NodePage.qml"),
             {"parentNodeId": nodeId})
-            /* PageStackAction.Immediate) */
+        refreshView(true)
     }
 
     function cancelCutNodes()
@@ -197,12 +196,7 @@ Page {
     }
 
     Component.onCompleted: {
-    }
-
-    onStatusChanged: {
-        if(status === PageStatus.Activating){
-            refreshView(true)
-        }
+        refreshView(true)
     }
 
     Python {
@@ -276,7 +270,7 @@ Page {
             PageHeader {
                 id: pageHeader
                 title: {
-                    if(parentNodeId === rootNodeId){
+                    if(parentNodeId === appWindow.rootNodeId){
                         return "Home"
                     }else{
                         // TODO
@@ -285,7 +279,7 @@ Page {
                     }
                 }
                 description: {
-                    if(parentNodeId === rootNodeId){
+                    if(parentNodeId === appWindow.rootNodeId){
                         return ""
                     }else{
                         // TODO

@@ -62,12 +62,12 @@ Dialog {
             data.mode = dynamicObject.mode;
         }
 
-        if(state === 'EDIT'){
+        if (state === 'CREATE'){
+            python.createNode(data);
+        }else if(state === 'EDIT'){
             data['id'] = nodeId;
             // TODO
             /* Database.updateNode(data); */
-        }else{
-            python.createNode(data);
         }
     }
 
