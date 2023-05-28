@@ -20,4 +20,5 @@ node_manager.init()
 generate_root_id = NodeIdGenerator.generate_root_id
 generate_node_id = NodeIdGenerator.generate_node_id
 create_node_from_data = node_manager.create_node_from_data
+update_node = node_manager.update_node
 request_child_node_data = node_manager.request_child_node_data

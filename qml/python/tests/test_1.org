@@ -1,0 +1,7 @@
+:PROPERTIES:
+:ID: 38950c6a-a419-11ed-a29b-080027d3c137
+:TYPE: Note
+:VERSION: 1
+:END:
+#+title: Test_1
+* Children

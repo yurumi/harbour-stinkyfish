@@ -12,27 +12,6 @@ Page {
     property string parentNodeId: ''
     property var appState: appWindow.state
 
-    onAppStateChanged: {
-        if(appState === 'SELECT'){
-            bottomPanel.opacity = 1.0
-            bottomPanel.show()
-            movementPanel.show()
-            pastePanel.hide()
-        }
-        else if(appState === 'VIEW'){
-            bottomPanel.opacity = 0.0
-            bottomPanel.hide()
-            movementPanel.hide()
-            pastePanel.hide()
-        }
-        else if(appState === 'PASTE'){
-            bottomPanel.opacity = 0.0
-            /* bottomPanel.hide() */
-            pastePanel.show()
-            movementPanel.hide()
-        }
-    }
-
     function handleNodeEntered(nodeId)
     {
         pageStack.push(
@@ -92,11 +71,17 @@ Page {
 
     function refreshView(clearSelection)
     {
+        // Delete all delegates.
         var selectedNodeIds = getSelection()
         for(var i=0; i<delegateColumn.children.length; ++i){
             delegateColumn.children[i].destroy()
         }
+
+        // Trigger node data signals.
         requestChildNodeData()
+
+        // Restore selection. TODO: Funtkioniert so vstl. nicht mehr ->
+        // selection speichern und beim Emfpangen der Node-Daten prüfer.
         if(!clearSelection){
             for(var i=0; i<selectedNodeIds.length; ++i){
                 for(var k=0; k<delegateColumn.children.length; ++k){
@@ -195,8 +180,34 @@ Page {
         }
     }
 
+    function updateDelegate(data)
+    {
+
+    }
+
     Component.onCompleted: {
         refreshView(true)
+    }
+
+    onAppStateChanged: {
+        if(appState === 'SELECT'){
+            bottomPanel.opacity = 1.0
+            bottomPanel.show()
+            movementPanel.show()
+            pastePanel.hide()
+        }
+        else if(appState === 'VIEW'){
+            bottomPanel.opacity = 0.0
+            bottomPanel.hide()
+            movementPanel.hide()
+            pastePanel.hide()
+        }
+        else if(appState === 'PASTE'){
+            bottomPanel.opacity = 0.0
+            /* bottomPanel.hide() */
+            pastePanel.show()
+            movementPanel.hide()
+        }
     }
 
     Python {
@@ -205,6 +216,10 @@ Page {
         Component.onCompleted: {
             setHandler('child_node_data', function(data) {
                 createDelegate(data)
+            });
+
+            setHandler('update_node', function(data) {
+                updateDelegate(data)
             });
         }
     }

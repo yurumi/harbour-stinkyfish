@@ -33,6 +33,9 @@ class NodeManager:
         self.send_fcn('child_node_data', data)
         return node.id
 
+    def update_node(self, node_id):
+        self.logger.log(f'py: update node {node_id}')
+
     def request_child_node_data(self, parent_node_id):
         org_string = self.file_database.load_org_string_by_id(parent_node_id)
         node = Node()

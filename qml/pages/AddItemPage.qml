@@ -64,6 +64,7 @@ Dialog {
 
         if (state === 'CREATE'){
             python.createNode(data);
+            python.updateNode(data['parent_id'])
         }else if(state === 'EDIT'){
             data['id'] = nodeId;
             // TODO

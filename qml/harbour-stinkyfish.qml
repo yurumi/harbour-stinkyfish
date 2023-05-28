@@ -61,6 +61,12 @@ ApplicationWindow
             });
         }
 
+        function updateNode(nodeId) {
+            python.call('entry_point.update_node', [nodeId], function () {
+                console.log(nodeId + ' updated');
+            });
+        }
+
         function requestChildNodeData(nodeId) {
             python.call('entry_point.request_child_node_data', [nodeId]);
         }
